@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 //@CrossOrigin({"http://localhost:4200", "http://mywebsite.com:4200"})   // multiple origins
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    // Spring Data REST supports pagination out of the box. Just send the parameters for page and size
+    // E.g. baseUrl?page=0&size=5
+
     // Query method -> "SELECT * FROM product WHERE category_id = ?"
     Page<Product> findByCategoryId(@Param("id") Long id, Pageable pageable);
 
