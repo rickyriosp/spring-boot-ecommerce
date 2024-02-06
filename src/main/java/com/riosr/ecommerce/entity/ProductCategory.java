@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product_category")
-// @Data -- known bug
+//@Data - known bug: https://stackoverflow.com/questions/73078524/java-lang-stackoverflowerror-while-saving-jpa-entities
 @Getter
 @Setter
 public class ProductCategory {
