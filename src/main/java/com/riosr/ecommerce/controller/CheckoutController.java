@@ -6,8 +6,8 @@ import com.riosr.ecommerce.service.CheckoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+//@CrossOrigin("http://localhost:4200") // not needed anymore configured in MyAppConfig
 @RestController
-@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/checkout")
 public class CheckoutController {
 

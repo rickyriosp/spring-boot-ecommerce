@@ -7,6 +7,7 @@ import com.riosr.ecommerce.entity.State;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.core.mapping.ExposureConfigurer;
@@ -21,6 +22,12 @@ import java.util.Set;
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
+    @Value("${spring.data.rest.base-path}")
+    private String basePath;
+
+    @Value("${allowed.origins}")
+    private String[] allowedOrigins;
+
     private EntityManager entityManager;
 
     @Autowired
@@ -32,9 +39,12 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         //RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
 
-        HttpMethod[] unsupportedActions = { HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE };
+        // configure CORS mapping for spring data rest
+        cors.addMapping(this.basePath + "/**").allowedOrigins(allowedOrigins);
 
         // disable HTTP methods: PUT, POST, DELETE
+        HttpMethod[] unsupportedActions = { HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH };
+
         disableHttpMethods(config, Product.class, unsupportedActions);
         disableHttpMethods(config, ProductCategory.class, unsupportedActions);
         disableHttpMethods(config, Country.class, unsupportedActions);

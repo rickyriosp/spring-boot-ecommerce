@@ -5,11 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-//@CrossOrigin    // any origin
-@CrossOrigin("http://localhost:4200")
+//@CrossOrigin("http://localhost:4200") // not needed anymore since it is configured in MyDataRestConfig
 //@CrossOrigin({"http://localhost:4200", "http://mywebsite.com:4200"})   // multiple origins
+@RepositoryRestResource
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Spring Data REST supports pagination out of the box. Just send the parameters for page and size
