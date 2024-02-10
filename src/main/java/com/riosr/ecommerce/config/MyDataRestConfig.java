@@ -1,9 +1,6 @@
 package com.riosr.ecommerce.config;
 
-import com.riosr.ecommerce.entity.Country;
-import com.riosr.ecommerce.entity.Product;
-import com.riosr.ecommerce.entity.ProductCategory;
-import com.riosr.ecommerce.entity.State;
+import com.riosr.ecommerce.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +46,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         disableHttpMethods(config, ProductCategory.class, unsupportedActions);
         disableHttpMethods(config, Country.class, unsupportedActions);
         disableHttpMethods(config, State.class, unsupportedActions);
+        disableHttpMethods(config, Order.class, unsupportedActions);
 
         // call an internal helper method
         exposeIds(config);
