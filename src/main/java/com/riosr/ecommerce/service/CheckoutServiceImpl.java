@@ -1,16 +1,26 @@
 package com.riosr.ecommerce.service;
 
 import com.riosr.ecommerce.dao.CustomerRepository;
+import com.riosr.ecommerce.dto.PaymentInfoDto;
 import com.riosr.ecommerce.dto.PurchaseDto;
 import com.riosr.ecommerce.dto.PurchaseResponseDto;
 import com.riosr.ecommerce.entity.Address;
 import com.riosr.ecommerce.entity.Customer;
 import com.riosr.ecommerce.entity.Order;
 import com.riosr.ecommerce.entity.OrderItem;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.SetupIntent;
+import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.PriceCreateParams;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,8 +30,11 @@ public class CheckoutServiceImpl implements CheckoutService {
     private CustomerRepository customerRepository;
 
     @Autowired
-    public CheckoutServiceImpl(CustomerRepository customerRepository) {
+    public CheckoutServiceImpl(CustomerRepository customerRepository, @Value("${stripe.key.secret}") String secretKey) {
         this.customerRepository = customerRepository;
+
+        // initialize Stripe API with secret key
+        Stripe.apiKey = secretKey;
     }
 
     @Override
@@ -64,6 +77,28 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // return a response
         return new PurchaseResponseDto(orderTrackingNumber);
+    }
+
+    @Override
+    public PaymentIntent createPaymentIntent(PaymentInfoDto paymentInfo) throws StripeException {
+        List<String> paymentMethodsTypes = new ArrayList<>();
+        paymentMethodsTypes.add("card");
+
+        PaymentIntentCreateParams params =
+                PaymentIntentCreateParams.builder()
+                        .setCurrency(paymentInfo.getCurrency())
+                        .setAmount((long) paymentInfo.getAmount())
+                        .addAllPaymentMethodType(paymentMethodsTypes)
+                        // accepts payment methods that you enable in the Dashboard and that
+                        // are compatible with this PaymentIntent’s other parameters.
+//                        .setAutomaticPaymentMethods(
+//                                PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+//                                        .setEnabled(true)
+//                                        .build()
+//                        )
+                        .build();
+
+        return PaymentIntent.create(params);
     }
 
     private String generateOrderTrackingNumber() {
