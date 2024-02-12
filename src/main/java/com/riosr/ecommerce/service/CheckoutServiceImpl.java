@@ -11,9 +11,7 @@ import com.riosr.ecommerce.entity.OrderItem;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.SetupIntent;
 import com.stripe.param.PaymentIntentCreateParams;
-import com.stripe.param.PriceCreateParams;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,6 +86,8 @@ public class CheckoutServiceImpl implements CheckoutService {
                 PaymentIntentCreateParams.builder()
                         .setCurrency(paymentInfo.getCurrency())
                         .setAmount((long) paymentInfo.getAmount())
+                        .setReceiptEmail(paymentInfo.getReceiptEmail())
+                        .setDescription("SimTrackUSA LLC.")
                         .addAllPaymentMethodType(paymentMethodsTypes)
                         // accepts payment methods that you enable in the Dashboard and that
                         // are compatible with this PaymentIntent’s other parameters.
